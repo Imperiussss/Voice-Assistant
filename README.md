@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 # Voice Assistant Python
 
 A simple voice assistant built with Python.
@@ -11,4 +9,3 @@ A simple voice assistant built with Python.
 - Text-to-speech
 - Get today's day
 
->>>>>>> 140f3db7ffbbe2a936554edab9d667a124de3553
