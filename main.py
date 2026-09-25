@@ -1,5 +1,7 @@
 import speech_recognition
 import pyttsx3
+import webbrowser
+from AppOpener import open
 from datetime import date
 from datetime import datetime
 
@@ -36,6 +38,40 @@ def learn(audio):
         robot_brain = "Im fine thank you, and you?"
     elif "bye" in you or "goodbye" in you:
         robot_brain = "Goodbye!"
+    elif "open" in you:
+        url = None
+        app = None
+        if "google" in you:
+            robot_brain = "Open Google"
+            url = "https://www.google.com"
+        elif "youtube" in you:
+            robot_brain = "Open YouTube"
+            url = "https://www.youtube.com"
+        elif "facebook" in you:
+            robot_brain = "Open Facebook"
+            url = "https://www.facebook.com"
+        elif "chrome" in you:
+            robot_brain = "Open Google Chrome"
+            app = "chrome"
+        elif "notepad" in you:
+            robot_brain = "Open notepad"
+            app = "notepad"
+        elif "spotify" in you:
+            robot_brain = "Open Spotify"
+            app = "spotify"
+        elif "visual studio" in you:
+            if "code" in you:
+                robot_brain = "Open Visual Studio Code"
+                app = "visual studio code"
+            else: 
+                robot_brain = "Open Visual Studio"
+                app = "visual studio"
+        else:
+            robot_brain = "I don't know this website or application"
+        if url:
+            webbrowser.open(url)
+        elif app:
+            open(app)
     else:
         robot_brain = "I don't understand"
     return robot_brain
