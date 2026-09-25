@@ -22,7 +22,7 @@ def conversation_command(command):
         robot_brain = "Current time is: " + time.strftime("%H hours %M minutes %S seconds")
     elif "how are you" in command:
         robot_brain = "Im fine thank you, and you?"
-    elif any(keyword for keyword in ("bye","goodbye","close")):
+    elif any(keyword in command for keyword in ("bye","goodbye","close")):
         robot_brain = "Goodbye!"
     else:
         robot_brain = "Sorry, i can't understand"
