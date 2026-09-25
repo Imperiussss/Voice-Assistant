@@ -8,4 +8,10 @@ A simple voice assistant built with Python.
 - Basic command processing
 - Text-to-speech
 - Get today's day
+  
+  *VERSION 1.1*
+- Website opening commands
+- Application opening commands
+
+
 
