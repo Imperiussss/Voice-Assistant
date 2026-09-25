@@ -1,65 +1,73 @@
+import json
 import webbrowser
-import speech_recognition
-from AppOpener import open
+from AppOpener import open as open_app
 from datetime import date
 from datetime import datetime
 from modules.listener import robot_ear
 
+with open("data/apps.json", "r", encoding="utf-8") as app_file:
+    apps = json.load(app_file)
+
+with open("data/webs.json", "r", encoding="utf-8") as web_file:
+    webs = json.load(web_file)
+
+def conversation_command(command):
+    if "hello" in command or "hi" in command:
+        robot_brain = "Hello, Thanh Vu"
+    elif "today" in command:
+        today = date.today()
+        robot_brain = "Today is: " + today.strftime("%B %d, %Y")
+    elif "time" in command:
+        time = datetime.now()
+        robot_brain = "Current time is: " + time.strftime("%H hours %M minutes %S seconds")
+    elif "how are you" in command:
+        robot_brain = "Im fine thank you, and you?"
+    elif any(keyword for keyword in ("bye","goodbye","close")):
+        robot_brain = "Goodbye!"
+    else:
+        robot_brain = "Sorry, i can't understand"
+    return robot_brain
+
+
+def application_command(command):
+    for keyword in sorted(apps, key=len, reverse=True):
+        app_name = apps[keyword]
+        if keyword in command:
+            robot_brain = "Open " + keyword
+            open_app(app_name)
+            return robot_brain
+        
+    return "I can't find this Application"
+
+def website_command(command):
+    for keyword in sorted(webs, key=len, reverse=True):
+        web_name = webs[keyword]
+        if keyword in command:
+            robot_brain = "Open " + keyword
+            webbrowser.open(web_name)
+            return robot_brain
+        
+    return "I can't find this Website"
+
+
 
 def learn(audio):
     try:
-        you = robot_ear.recognize_google(audio).lower()
+        command = robot_ear.recognize_google(audio).lower()
     except:
-        you = ""
+        command = ""
+
+    print(command)
     
-    if you == "":
-        robot_brain = "Sorry, i can't hear you, please try again"
-    elif "hello" in you or "hi" in you:
-        robot_brain = "Hello, Thanh Vu"
-    elif "today" in you:
-        today = date.today()
-        robot_brain = "Today is: " + today.strftime("%B %d, %Y")
-    elif "time" in you:
-        time = datetime.now()
-        robot_brain = "Current time is: " + time.strftime("%H hours %M minutes %S seconds")
-    elif "how are you" in you:
-        robot_brain = "Im fine thank you, and you?"
-    elif "bye" in you or "goodbye" in you:
-        robot_brain = "Goodbye!"
-    elif "open" in you:
-        url = None
-        app = None
-        if "google" in you:
-            robot_brain = "Open Google"
-            url = "https://www.google.com"
-        elif "youtube" in you:
-            robot_brain = "Open YouTube"
-            url = "https://www.youtube.com"
-        elif "facebook" in you:
-            robot_brain = "Open Facebook"
-            url = "https://www.facebook.com"
-        elif "chrome" in you:
-            robot_brain = "Open Google Chrome"
-            app = "chrome"
-        elif "notepad" in you:
-            robot_brain = "Open notepad"
-            app = "notepad"
-        elif "spotify" in you:
-            robot_brain = "Open Spotify"
-            app = "spotify"
-        elif "visual studio" in you:
-            if "code" in you:
-                robot_brain = "Open Visual Studio Code"
-                app = "visual studio code"
-            else: 
-                robot_brain = "Open Visual Studio"
-                app = "visual studio"
-        else:
-            robot_brain = "I don't know this website or application"
-        if url:
-            webbrowser.open(url)
-        elif app:
-            open(app)
-    else:
-        robot_brain = "I don't understand"
+    if command == "":
+        robot_brain = "Sorry, i can't hear you"            
+    elif "open" in command:
+        if any(keyword in command for keyword in webs):
+            robot_brain = website_command(command)
+        elif any(keyword in command for keyword in apps):
+            robot_brain = application_command(command)    
+        else: 
+            robot_brain = "I can't find this website or application"
+    else: 
+        robot_brain = conversation_command(command)
     return robot_brain
