@@ -20,3 +20,10 @@ A simple voice assistant built with Python.
 
 * Refactored the project into separate modules
 * Separated listening, speech processing, and text-to-speech responsibilities
+
+#### VERSION 1.3
+
+* Added search commands
+* Added multiple search keywords
+* Change listen duration
+
