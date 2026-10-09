@@ -8,17 +8,15 @@ from urllib.parse import quote_plus
 from AppOpener import give_appnames
 from AppOpener import mklist
 
-# ================================== DATA LOAD ====================================
-apps = give_appnames()
+# ================================== LOAD DATA ====================================
 mklist("data/apps.json")
-
 with open("data/apps.json", "r", encoding="utf-8") as app_file:
     apps = json.load(app_file)
 
 with open("data/webs.json", "r", encoding="utf-8") as web_file:
     webs = json.load(web_file)
 
-# ===================================== COMMAND =====================================
+# ===================================== COMMAND CONSTANTS =====================================
 
 OPEN_COMMANDS =  {
     "open", "launch", "start", "run"
@@ -100,7 +98,7 @@ def search_command(command):
 
 def learn(audio):
     try:
-        command = robot_ear.recognize_google(audio).lower()
+        command = robot_ear.recognize_google(audio)
         command = normalize_command(command)
     except:
         command = ""
