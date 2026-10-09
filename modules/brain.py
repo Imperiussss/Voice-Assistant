@@ -5,8 +5,12 @@ from AppOpener import close as close_app
 from datetime import date, datetime
 from modules.listener import robot_ear
 from urllib.parse import quote_plus
+from AppOpener import give_appnames
+from AppOpener import mklist
 
-# ================================== READ KEYWORD ==================================
+# ================================== DATA LOAD ====================================
+apps = give_appnames()
+mklist("data/apps.json")
 
 with open("data/apps.json", "r", encoding="utf-8") as app_file:
     apps = json.load(app_file)
@@ -33,6 +37,9 @@ CLOSE_COMMANDS = {
 def contains_command(sentences, commands):
     return any(word in sentences for word in commands)
 
+def normalize_command(command):
+    return " ".join(command.lower().split()) 
+
 
 # ===================================== COMMAND ( BRAIN ) ===================================== 
 
@@ -47,7 +54,7 @@ def conversation_command(command):
         return "Current time is: " + time.strftime("%H hours %M minutes %S seconds")
     elif "how are you" in command:
         return "Im fine thank you, and you?"
-    elif any(keyword in command for keyword in ("bye","goodbye","close")):
+    elif any(keyword in command for keyword in ("bye","goodbye")):
         return "Goodbye!"
     else:
         return "Sorry, i can't understand"
@@ -55,13 +62,12 @@ def conversation_command(command):
 
 def application_command(command):
     for keyword in sorted(apps, key=len, reverse=True):
-        app_name = apps[keyword]
 
         if contains_command(command, OPEN_COMMANDS) and keyword in command:
-            open_app(app_name)
+            open_app(keyword)
             return "Open " + keyword
         elif contains_command(command, CLOSE_COMMANDS) and keyword in command:
-            close_app(app_name)
+            close_app(keyword)
             return "Close " + keyword
         
     return "I can't find this Application"
@@ -86,7 +92,7 @@ def search_command(command):
                 encoded_query = quote_plus(query)
                 url = "https://www.google.com/search?q=" + encoded_query
                 webbrowser.open(url)
-                return command + query
+                return "Searching for: " + query
 
     return "What do you want me to search?"
 
@@ -95,6 +101,7 @@ def search_command(command):
 def learn(audio):
     try:
         command = robot_ear.recognize_google(audio).lower()
+        command = normalize_command(command)
     except:
         command = ""
 
